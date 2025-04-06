@@ -123,11 +123,10 @@
 			"prefix": "app",
 			"architect": {
 				"build": {
-					"builder": "@angular-devkit/build-angular:application",
+					"builder": "ngx-build-plus:browser",
 					"options": {
 						"outputPath": "dist/mfe-app",
 						"index": "projects/mfe-app/src/index.html",
-						"browser": "projects/mfe-app/src/main.ts",
 						"polyfills": [
 							"zone.js"
 						],
@@ -136,18 +135,20 @@
 						"assets": [
 							{
 								"glob": "**/*",
-								"input": "projects/mfe-app/public"
+								"input": "projects/mfe-app/public",
+								"output": "."
 							}
 						],
 						"styles": [
 							"projects/mfe-app/src/styles.scss"
 						],
 						"scripts": [],
-						"server": "projects/mfe-app/src/main.server.ts",
-						"prerender": true,
 						"ssr": {
 							"entry": "projects/mfe-app/server.ts"
-						}
+						},
+						"main": "projects/mfe-app/src/main.ts",
+						"extraWebpackConfig": "projects/mfe-app/webpack.config.js",
+						"commonChunk": false
 					},
 					"configurations": {
 						"production": {
@@ -163,7 +164,8 @@
 									"maximumError": "4kB"
 								}
 							],
-							"outputHashing": "all"
+							"outputHashing": "all",
+							"extraWebpackConfig": "projects/mfe-app/webpack.prod.config.js"
 						},
 						"development": {
 							"optimization": false,
@@ -174,16 +176,22 @@
 					"defaultConfiguration": "production"
 				},
 				"serve": {
-					"builder": "@angular-devkit/build-angular:dev-server",
+					"builder": "ngx-build-plus:dev-server",
 					"configurations": {
 						"production": {
-							"buildTarget": "mfe-app:build:production"
+							"buildTarget": "mfe-app:build:production",
+							"extraWebpackConfig": "projects/mfe-app/webpack.prod.config.js"
 						},
 						"development": {
 							"buildTarget": "mfe-app:build:development"
 						}
 					},
-					"defaultConfiguration": "development"
+					"defaultConfiguration": "development",
+					"options": {
+						"port": 4300,
+						"publicHost": "http://localhost:4300",
+						"extraWebpackConfig": "projects/mfe-app/webpack.config.js"
+					}
 				},
 				"extract-i18n": {
 					"builder": "@angular-devkit/build-angular:extract-i18n"
